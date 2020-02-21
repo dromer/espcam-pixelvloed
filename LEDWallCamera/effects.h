@@ -14,9 +14,6 @@ long long frames[30][40];
 int effect = 0;
 int calibration = 10;
 
-// const char * udpAddress = "10.208.42.25";
-const char * udpAddress = "10.208.42.159";
-const int udpPort = 5004;
 
 void calibrateWall()
 {
@@ -151,9 +148,10 @@ void calib()
 
       myPacket.pixel[pixelCnt].x = x + displayXOffset;
       myPacket.pixel[pixelCnt].y = y + displayYOffset;
-      myPacket.pixel[pixelCnt].r = avgImage[y][x][0];
-      myPacket.pixel[pixelCnt].g = avgImage[y][x][1];
-      myPacket.pixel[pixelCnt].b = avgImage[y][x][2];
+      myPacket.pixel[pixelCnt].r = 255/31 * avgImage[y][x][0];
+      myPacket.pixel[pixelCnt].g = 255/63 * avgImage[y][x][1];
+      myPacket.pixel[pixelCnt].b = 255/31 * avgImage[y][x][2];
+      myPacket.pixel[pixelCnt].a = 128;
 
       pixelCnt++;
 
@@ -265,9 +263,13 @@ void flutImage()
     {
       myPacket.pixel[pixelCnt].x = x + displayXOffset;
       myPacket.pixel[pixelCnt].y = y + displayYOffset;
-      myPacket.pixel[pixelCnt].r = newImage[y][x][0];
-      myPacket.pixel[pixelCnt].g = newImage[y][x][1];
-      myPacket.pixel[pixelCnt].b = newImage[y][x][2];
+      // myPacket.pixel[pixelCnt].r = newImage[y][x][0];
+      // myPacket.pixel[pixelCnt].g = newImage[y][x][1];
+      // myPacket.pixel[pixelCnt].b = newImage[y][x][2];
+      myPacket.pixel[pixelCnt].r = 255/31 * newImage[y][x][0];
+      myPacket.pixel[pixelCnt].g = 255/63 * newImage[y][x][1];
+      myPacket.pixel[pixelCnt].b = 255/31 * newImage[y][x][2];
+      myPacket.pixel[pixelCnt].a = 128;
 
       pixelCnt++;
 

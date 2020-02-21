@@ -4,6 +4,7 @@
 #pragma once
 
 #define PACKET_SIZE 16
+// #define PACKET_SIZE 1
 #define PACKET_SIZE_BYTES 114
 
 WiFiUDP udp;
@@ -14,6 +15,7 @@ struct Pixel {
     uint8_t r;
     uint8_t g;
     uint8_t b;
+    uint8_t a;
 } pixel;
 
 struct Packet {
