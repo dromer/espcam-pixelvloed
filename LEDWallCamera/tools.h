@@ -1,5 +1,7 @@
 #pragma once
 #include <math.h>
+
+
 long sinTab[256];
 
 void calculateSinTab()

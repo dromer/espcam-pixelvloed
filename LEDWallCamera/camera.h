@@ -44,6 +44,7 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_RGB565,//YUV422,GRAYSCALE,RGB565,JPEG
+    // .pixel_format = PIXFORMAT_JPEG,//YUV422,GRAYSCALE,RGB565,JPEG
     .frame_size = FRAMESIZE_QQVGA,//QQVGA-QXGA Do not use sizes above QVGA when not JPEG
 
     .jpeg_quality = 12, //0-63 lower number means higher quality
@@ -66,6 +67,7 @@ bool cameraInit()
           delay(500);
       }
   
+
       //initialize the camera
       err = esp_camera_init(&camera_config);
       if (err != ESP_OK) {
@@ -76,7 +78,9 @@ bool cameraInit()
     }
     while(err != ESP_OK && tries < 3);
     if(err == ESP_OK)
-      Serial.println("Camera Init Success"); 
+    {
+      Serial.println("Camera Init Success");
+    }
     else
     {
       Serial.println("Restarting...");
