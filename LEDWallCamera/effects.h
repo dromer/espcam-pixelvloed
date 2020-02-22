@@ -14,6 +14,11 @@ long long frames[30][40];
 int effect = 0;
 int calibration = 10;
 
+// const char * udpAddress = "10.208.42.25";
+// const char * udpAddress = "10.208.42.159";
+// const char * udpAddress = "192.168.178.11";
+const char * udpAddress = "192.168.12.92";
+const int udpPort = 5004;
 
 void calibrateWall()
 {
@@ -133,7 +138,7 @@ void calib()
 {
   // union Packet myPacket;
   struct Packet myPacket;
-  myPacket.header = 1;
+  myPacket.header = 0;
   // myPacket.vheader = 0x00;
   // myPacket.cheader = 0x00;
   int pixelCnt = 0;
@@ -151,7 +156,7 @@ void calib()
       myPacket.pixel[pixelCnt].r = 255/31 * avgImage[y][x][0];
       myPacket.pixel[pixelCnt].g = 255/63 * avgImage[y][x][1];
       myPacket.pixel[pixelCnt].b = 255/31 * avgImage[y][x][2];
-      myPacket.pixel[pixelCnt].a = 128;
+      // myPacket.pixel[pixelCnt].a = 128;
 
       pixelCnt++;
 
@@ -253,7 +258,7 @@ void flutImage()
 {
   // Serial.println("flut!");
   struct Packet myPacket;
-  myPacket.header = 1;
+  myPacket.header = 0;
   int pixelCnt = 0;
 
  // draw pixels
@@ -269,7 +274,7 @@ void flutImage()
       myPacket.pixel[pixelCnt].r = 255/31 * newImage[y][x][0];
       myPacket.pixel[pixelCnt].g = 255/63 * newImage[y][x][1];
       myPacket.pixel[pixelCnt].b = 255/31 * newImage[y][x][2];
-      myPacket.pixel[pixelCnt].a = 128;
+      // myPacket.pixel[pixelCnt].a = 128;
 
       pixelCnt++;
 
@@ -284,7 +289,7 @@ void flutImage()
   }
   //Send any overflow?
   if (pixelCnt > 0) {
-    // flutEnd(myPacket, udpAddress, udpPort, pixelCnt);
+    flutEnd(myPacket, udpAddress, udpPort, pixelCnt);
     pixelCnt=0;
 
     Serial.println("Last part sent.");

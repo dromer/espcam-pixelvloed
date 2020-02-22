@@ -2,6 +2,7 @@
 #include <WiFiUdp.h>
 
 #pragma once
+#pragma pack(1)
 
 #define PACKET_SIZE 16
 // #define PACKET_SIZE 1
@@ -9,13 +10,14 @@
 
 WiFiUDP udp;
 
+
 struct Pixel {
     uint16_t y;
     uint16_t x;
     uint8_t r;
     uint8_t g;
     uint8_t b;
-    uint8_t a;
+    // uint8_t a;
 } pixel;
 
 struct Packet {
@@ -26,11 +28,12 @@ struct Packet {
 
 void flutSend(struct Packet &myPacket, const char *udpAddress, const int udpPort)
 {
-    unsigned char framedPacket[sizeof(myPacket)];
-    memcpy(framedPacket, &myPacket, sizeof(myPacket));
+    // unsigned char framedPacket[sizeof(myPacket)];
+    // memcpy(framedPacket, &myPacket, sizeof(myPacket));
 
     udp.beginPacket(udpAddress,udpPort);
-    udp.write((uint8_t*) framedPacket, sizeof(myPacket));
+    // udp.write((uint8_t*) framedPacket, sizeof(myPacket));
+    udp.write((uint8_t*) &myPacket, sizeof(myPacket));
     udp.endPacket();
     udp.stop();
 
@@ -43,19 +46,16 @@ void flutSend(struct Packet &myPacket, const char *udpAddress, const int udpPort
 }
 
 
-// // To end possible trailing data
-// void flutEnd(union Packet &myPacket, const char *udpAddress, const int udpPort, int pixelCnt)
-// {
-//     unsigned char framedPacket[sizeof(myPacket)];
+// To end possible trailing data
+void flutEnd(struct Packet &myPacket, const char *udpAddress, const int udpPort, int pixelCnt)
+{
+    int packetSize = sizeof(myPacket) - (PACKET_SIZE - pixelCnt) * 7 + 2;
 
-//     int packetSize = sizeof(framedPacket) - (PACKET_SIZE - pixelCnt) * 7 + 2;  // why?
-//     memcpy(framedPacket, &myPacket, packetSize);
+    udp.beginPacket(udpAddress, udpPort);
+    udp.write((uint8_t*) &myPacket, packetSize);
+    udp.endPacket();
+    udp.stop();
 
-//     udp.beginPacket(udpAddress, udpPort);
-//     udp.write((uint8_t* )framedPacket, sizeof(myPacket));
-//     udp.endPacket();
-//     udp.stop();
-
-//     Serial.write((uint8_t*) framedPacket, sizeof(myPacket));
-//     Serial.println("End of the line.");
-// }
+    // Serial.write((uint8_t*) myPacket, sizeof(myPacket));
+    Serial.println("End of the line.");
+}

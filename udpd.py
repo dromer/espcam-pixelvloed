@@ -33,32 +33,55 @@ sock.bind((UDP_IP, UDP_PORT))
 
 PACKET_SIZE = 16
 
+# def parse_packet(data):
+
+#     s = struct.unpack_from(
+#         'HHBBB' * PACKET_SIZE, 
+#         data, 
+#         offset=2
+#     )
+
+#     s = data.decode('ascii')
+
+#     # print(s)
+
+#     packet = []
+
+#     for i in range(2, PACKET_SIZE+2):
+#         pixel = {
+#             'x': s[0*i],
+#             'y': s[1*i],
+#             'r': s[2*i],
+#             'g': s[3*i],
+#             'b': s[4*i],
+#             # 'a': s[5*i]
+#         }
+#         packet.append(pixel)
+
+#     # print(packet)
+#     print(json.dumps(packet, indent=4))
+
 def parse_packet(data):
 
-    # s = struct.unpack_from(
-    #     'HHBBB' * PACKET_SIZE, 
-    #     data, 
-    #     offset=2
-    # )
-
-    s = data.decode('ascii')
-
-    # print(s)
+    pixels = (len(data) - 2) / 7
+    # print(pixels)
 
     packet = []
-
-    for i in range(2, PACKET_SIZE+2):
+    for i in range(0, int(pixels)):
+        offset = 2 + (7 * i)
+        s = struct.unpack_from("<2H3B", data, offset=offset)
         pixel = {
-            'x': s[0*i],
-            'y': s[1*i],
-            'r': s[2*i],
-            'g': s[3*i],
-            'b': s[4*i],
+            'x': s[0],
+            'y': s[1],
+            'r': s[2],
+            'g': s[3],
+            'b': s[4],
             # 'a': s[5*i]
         }
         packet.append(pixel)
 
-    # print(packet)
+    
+    # return packet
     print(json.dumps(packet, indent=4))
 
 xbuf = 255
