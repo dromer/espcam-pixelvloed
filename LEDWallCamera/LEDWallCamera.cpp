@@ -20,10 +20,10 @@ const char * networkPswd = "<wifi password>";
 boolean connected = false;
 
 // image setup
-unsigned char image[40*30][3];
+unsigned char image[displayX*displayY][3];
 // SerialLED gfx;
 
-int imageRes[] = {40, 30};
+int imageRes[] = {displayX, displayY};
 int currentImage = 1;
 // int calibration = 100;
 volatile bool frameAvailable = false;
@@ -81,11 +81,11 @@ void setup()
   cameraInit();
   setCameraParams();
   // initServer();
-  calculateSinTab();
-  calcRainbow();
+  // calculateSinTab();
+  // calcRainbow();
   // gfx.setGamma(2.8f, 2.8f, 2.8f);
   // gfx.init(2, 1200, -1, -1);
-  initEffects();
+  // initEffects();
   // TaskHandle_t xHandle = NULL;
   // xTaskCreatePinnedToCore(webTask, "web", 5000, 0,  ( 2 | portPRIVILEGE_BIT ), &xHandle, 0);
 }
@@ -112,7 +112,7 @@ if(connected){
   if(frameAvailable)
   {
     justShowImage();
- 
+
     frameAvailable = false;
 
     // Serial.println("");
@@ -121,4 +121,3 @@ if(connected){
   delay(5);
   }
 }
-

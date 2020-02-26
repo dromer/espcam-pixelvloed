@@ -17,7 +17,6 @@ struct Pixel {
     uint8_t r;
     uint8_t g;
     uint8_t b;
-    // uint8_t a;
 } pixel;
 
 struct Packet {
@@ -28,11 +27,7 @@ struct Packet {
 
 void flutSend(struct Packet &myPacket, const char *udpAddress, const int udpPort)
 {
-    // unsigned char framedPacket[sizeof(myPacket)];
-    // memcpy(framedPacket, &myPacket, sizeof(myPacket));
-
     udp.beginPacket(udpAddress,udpPort);
-    // udp.write((uint8_t*) framedPacket, sizeof(myPacket));
     udp.write((uint8_t*) &myPacket, sizeof(myPacket));
     udp.endPacket();
     udp.stop();
@@ -49,13 +44,16 @@ void flutSend(struct Packet &myPacket, const char *udpAddress, const int udpPort
 // To end possible trailing data
 void flutEnd(struct Packet &myPacket, const char *udpAddress, const int udpPort, int pixelCnt)
 {
-    int packetSize = sizeof(myPacket) - (PACKET_SIZE - pixelCnt) * 7 + 2;
+    int packetSize = sizeof(myPacket) - (PACKET_SIZE - pixelCnt) * 7;
 
     udp.beginPacket(udpAddress, udpPort);
     udp.write((uint8_t*) &myPacket, packetSize);
     udp.endPacket();
     udp.stop();
 
-    // Serial.write((uint8_t*) myPacket, sizeof(myPacket));
+    // Serial.write((uint8_t*) &myPacket, sizeof(myPacket));
+    // Serial.println();
+    // Serial.println(packetSize);
+
     Serial.println("End of the line.");
 }

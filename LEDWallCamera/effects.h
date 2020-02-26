@@ -4,20 +4,20 @@
 
 #pragma once
 
-unsigned char newImage[30][40][3];
-unsigned short avgImage[30][40][3];
-unsigned char difference[30][40];
-unsigned char distance[30][40];
-unsigned char flames[32][41];
+unsigned char newImage[displayY][displayX][3];
+unsigned short avgImage[displayY][displayX][3];
+unsigned char difference[displayY][displayX];
+unsigned char distance[displayY][displayX];
+unsigned char flames[displayY+2][displayX+1];
 unsigned char flamesC[255][3];
-long long frames[30][40];
+long long frames[displayY][displayX];
 int effect = 0;
 int calibration = 10;
 
 // const char * udpAddress = "10.208.42.25";
 // const char * udpAddress = "10.208.42.159";
-// const char * udpAddress = "192.168.178.11";
-const char * udpAddress = "192.168.12.92";
+const char * udpAddress = "192.168.178.6";
+// const char * udpAddress = "192.168.12.92";
 const int udpPort = 5004;
 
 void calibrateWall()
@@ -53,8 +53,8 @@ void initEffects()
 
 void recalcAverage()
 {
-  for(int y = 0; y < 30; y++)
-    for(int x = 0; x < 40; x++)
+  for(int y = 0; y < displayY; y++)
+    for(int x = 0; x < displayX; x++)
     {
       avgImage[y][x][0] = ((avgImage[y][x][0]) * 128 + newImage[y][x][0] * 128) >> 8;
       avgImage[y][x][1] = ((avgImage[y][x][1]) * 128 + newImage[y][x][1] * 128) >> 8;
@@ -64,8 +64,8 @@ void recalcAverage()
 
 void calcDifference()
 {
-  for(int y = 0; y < 30; y++)
-    for(int x = 0; x < 40; x++)
+  for(int y = 0; y < displayY; y++)
+    for(int x = 0; x < displayX; x++)
     {
       difference[y][x] = min(255,
       abs((avgImage[y][x][0]) - newImage[y][x][0]) +
@@ -76,9 +76,9 @@ void calcDifference()
 
 void downSample(unsigned char *frame)
 {
-  for(int y = 0; y < 30; y++)
+  for(int y = 0; y < displayY; y++)
   {
-    for(int x = 0; x < 40; x++)
+    for(int x = 0; x < displayX; x++)
     {
       int r = 0;
       int g = 0;
@@ -95,6 +95,14 @@ void downSample(unsigned char *frame)
       newImage[y][x][0] = r >> 4;
       newImage[y][x][1] = g >> 4;
       newImage[y][x][2] = b >> 4;
+
+
+      // unsigned char p[3];
+      // getPixel(x, y, frame, p);
+
+      // newImage[y][x][0] = p[0];
+      // newImage[y][x][1] = p[1];
+      // newImage[y][x][2] = p[2];
     }
   }
   /*
@@ -144,19 +152,18 @@ void calib()
   int pixelCnt = 0;
 
   recalcAverage();
-  for(int y = 0; y < 30; y++)
+  for(int y = 0; y < displayY; y++)
   {
-    for(int x = 0; x < 40; x++)
+    for(int x = 0; x < displayX; x++)
     {
       // int sample = pixelMap(x, y);
       // gfx.setLED(sample, 128, 128, 128);
 
-      myPacket.pixel[pixelCnt].x = x + displayXOffset;
-      myPacket.pixel[pixelCnt].y = y + displayYOffset;
+      myPacket.pixel[pixelCnt].y = x + displayXOffset;
+      myPacket.pixel[pixelCnt].x = y + displayYOffset;
       myPacket.pixel[pixelCnt].r = 255/31 * avgImage[y][x][0];
       myPacket.pixel[pixelCnt].g = 255/63 * avgImage[y][x][1];
       myPacket.pixel[pixelCnt].b = 255/31 * avgImage[y][x][2];
-      // myPacket.pixel[pixelCnt].a = 128;
 
       pixelCnt++;
 
@@ -243,15 +250,15 @@ void calib()
 //     }
 // }
 
-void showImage()
-{
-  for(int y = 0; y < 30; y++)
-    for(int x = 0; x < 40; x++)
-    {
-      int sample = pixelMap(x, y);
-      // gfx.setLEDGamma(sample, newImage[y][x][0], newImage[y][x][1], newImage[y][x][2]);
-    }
-}
+// void showImage()
+// {
+//   for(int y = 0; y < 30; y++)
+//     for(int x = 0; x < 40; x++)
+//     {
+//       int sample = pixelMap(x, y);
+//       // gfx.setLEDGamma(sample, newImage[y][x][0], newImage[y][x][1], newImage[y][x][2]);
+//     }
+// }
 
 
 void flutImage()
@@ -262,19 +269,15 @@ void flutImage()
   int pixelCnt = 0;
 
  // draw pixels
-  for(int y = 0; y < 30; y++)
+  for(int y = 0; y < displayY; y++)
   {
-    for(int x = 0; x < 40; x++)
+    for(int x = 0; x < displayX; x++)
     {
-      myPacket.pixel[pixelCnt].x = x + displayXOffset;
-      myPacket.pixel[pixelCnt].y = y + displayYOffset;
-      // myPacket.pixel[pixelCnt].r = newImage[y][x][0];
-      // myPacket.pixel[pixelCnt].g = newImage[y][x][1];
-      // myPacket.pixel[pixelCnt].b = newImage[y][x][2];
-      myPacket.pixel[pixelCnt].r = 255/31 * newImage[y][x][0];
-      myPacket.pixel[pixelCnt].g = 255/63 * newImage[y][x][1];
-      myPacket.pixel[pixelCnt].b = 255/31 * newImage[y][x][2];
-      // myPacket.pixel[pixelCnt].a = 128;
+      myPacket.pixel[pixelCnt].y = x + displayXOffset;
+      myPacket.pixel[pixelCnt].x = y + displayYOffset;
+      myPacket.pixel[pixelCnt].r = newImage[y][x][0];
+      myPacket.pixel[pixelCnt].g = newImage[y][x][1];
+      myPacket.pixel[pixelCnt].b = newImage[y][x][2];
 
       pixelCnt++;
 

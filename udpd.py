@@ -9,7 +9,7 @@ from ctypes import *
 
 # UDP_IP = "10.208.42.25"
 # UDP_IP = "192.168.178.11"
-UDP_IP = "192.168.12.92"
+UDP_IP = "192.168.178.6"
 UDP_PORT = 5004
 
 sock = socket.socket(socket.AF_INET, # Internet
@@ -36,8 +36,8 @@ PACKET_SIZE = 16
 # def parse_packet(data):
 
 #     s = struct.unpack_from(
-#         'HHBBB' * PACKET_SIZE, 
-#         data, 
+#         'HHBBB' * PACKET_SIZE,
+#         data,
 #         offset=2
 #     )
 
@@ -71,18 +71,28 @@ def parse_packet(data):
         offset = 2 + (7 * i)
         s = struct.unpack_from("<2H3B", data, offset=offset)
         pixel = {
-            'x': s[0],
-            'y': s[1],
+            'y': s[0],
+            'x': s[1],
             'r': s[2],
             'g': s[3],
             'b': s[4],
-            # 'a': s[5*i]
         }
         packet.append(pixel)
 
-    
     # return packet
     print(json.dumps(packet, indent=4))
+
+
+def parse_header(data):
+
+    s = struct.unpack_from("2B", data)
+
+    header = {
+        'v_head': s[0],
+        'c_head': s[1]
+    }
+
+    print(json.dumps(header, indent=4))
 
 xbuf = 255
 ybuf = 255
@@ -90,8 +100,8 @@ imagebuf = [[0] * xbuf for i in range(ybuf)]
 
 def create_buffer(data):
     s = struct.unpack_from(
-        'HHBBB' * PACKET_SIZE, 
-        data, 
+        'HHBBB' * PACKET_SIZE,
+        data,
         offset=2
     )
 
@@ -106,7 +116,7 @@ def create_buffer(data):
         }
 
         imagebuf[xcoord][ycoord] = pixel
-    
+
     # print(imagebuf)
 
 count=0
@@ -119,6 +129,7 @@ while True:
     # print(binascii.hexlify(data))
     # print(len(data))
 #    print(addr)
-    
-    parse_packet(data)
+
+    # parse_packet(data)
+    parse_header(data)
     # create_buffer(data)
