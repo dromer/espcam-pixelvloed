@@ -104,6 +104,9 @@ void setCameraParams()
   //sensor->set_ae_level(sensor, 100);
   //sensor->set_gain_ctrl(sensor, 100);
   
+  sensor->set_quality(sensor, 35);
+
+  // sensor->set_gain(sensor, );
 
 /*
 *   some other prameters.. good luck

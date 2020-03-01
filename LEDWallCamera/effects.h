@@ -14,10 +14,8 @@ long long frames[displayY][displayX];
 int effect = 0;
 int calibration = 10;
 
-// const char * udpAddress = "10.208.42.25";
-// const char * udpAddress = "10.208.42.159";
-const char * udpAddress = "192.168.178.6";
-// const char * udpAddress = "192.168.12.92";
+// const char * udpAddress = "192.168.12.92"; // testflut
+const char * udpAddress = "10.208.42.159"; // nurdsflut
 const int udpPort = 5004;
 
 void calibrateWall()
@@ -80,22 +78,28 @@ void downSample(unsigned char *frame)
   {
     for(int x = 0; x < displayX; x++)
     {
-      int r = 0;
-      int g = 0;
-      int b = 0;
-      for(int j = 0; j < 4; j++)
-        for(int i = 0; i < 4; i++)
-        {
-          unsigned char p[3];
-          getPixel(x * 4 + i, y * 4 + j, frame, p);
-          r += p[0];
-          g += p[1];
-          b += p[2];
-        }
-      newImage[y][x][0] = r >> 4;
-      newImage[y][x][1] = g >> 4;
-      newImage[y][x][2] = b >> 4;
+      // int r = 0;
+      // int g = 0;
+      // int b = 0;
+      // for(int j = 0; j < 4; j++)
+      //   for(int i = 0; i < 4; i++)
+      //   {
+      //     unsigned char p[3];
+      //     getPixel(x * 4 + i, y * 4 + j, frame, p);
+      //     r += p[0];
+      //     g += p[1];
+      //     b += p[2];
+      //   }
+      // newImage[y][x][0] = r >> 4;
+      // newImage[y][x][1] = g >> 4;
+      // newImage[y][x][2] = b >> 4;
 
+      unsigned char p[3];
+      getPixel(x * 4, y * 4, frame, p);
+      newImage[y][x][0] = p[0];
+      newImage[y][x][1] = p[1];
+      newImage[y][x][2] = p[2];
+      
 
       // unsigned char p[3];
       // getPixel(x, y, frame, p);
